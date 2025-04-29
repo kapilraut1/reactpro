@@ -2,26 +2,27 @@ import { useState } from "react";
 import React from "react";
 import "./App.css";
 import useCurrencyInfo from "./hooks/useCurrencyinfo";
-import { inputbox } from "./components/index.js";
+import InputBox from "./components/inputbox";
 
 function App() {
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState("");
   const [from, setFrom] = useState("usd");
-  const [to, setTo] = useState("inr");
-  const [convertAmount, setConvertAmount] = useState(0);
+  const [to, setTo] = useState("npr");
+  const [convertedAmount, setConvertedAmount] = useState(0);
 
-  const currencyData = useCurrencyInfo(from);
-  const options = Object.keys(currencyData);
+  const currencyInfo = useCurrencyInfo(from);
+  const options = Object.keys(currencyInfo);
 
   const swap = () => {
     setFrom(to);
     setTo(from);
-    setConvertAmount(amount);
-    setAmount(convertAmount);
+    setConvertedAmount(amount);
+    setAmount(convertedAmount);
   };
 
   const convert = () => {
-    setConvertAmount(amount * currencyData[to]);
+    setConvertedAmount(parseFloat(amount * currencyInfo[to]).toFixed(2));
+    
   };
   return (
     <>
@@ -40,7 +41,7 @@ function App() {
               }}
             >
               <div className="w-full mb-1">
-                <inputbox
+                <InputBox
                   label="from"
                   amount={amount}
                   currencyOptions={options}
@@ -51,25 +52,29 @@ function App() {
               </div>
               <div className="relative w-full h-0 5">
                 <button
-                  className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 border-2 border-white rounded-md bg-blue-600 text-white px-2 py-0.5"
+                  className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 border-2 border-white rounded-md bg-blue-600 text-white px-2 py-0.5 hover:bg-green-700"
                   onClick={swap}
                 >
                   Swap
                 </button>
               </div>
               <div className="w-full mb-1">
-                <inputbox
+                <InputBox
                   label="to"
-                  amount={convertAmount}
+                  amount={convertedAmount}
                   currencyOptions={options}
-                  amountDisabled
                   onCurrencyChange={(currency) => setTo(currency)}
                   selectedCurrency={to}
+                  amountDisabled
                 />
               </div>
-              <button type="submit"
-              className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg"
-              >Convert</button>
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-green-500"
+                
+              >
+                Convert {from.toUpperCase()} to {to.toUpperCase()}
+              </button>
             </form>
           </div>
         </div>
